@@ -11,29 +11,38 @@ use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
-    // Registro
     public function register(Request $request)
     {
-        // Validación de los datos de entrada
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
             'numeroTelefono' => 'required|string|max:15',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // password_confirmation es necesario
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Crear el usuario
+        // Retornarmos errores de validación en caso de haber
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Creo el usuario
         $user = User::create([
-            'name' => $validated['name'],
-            'apellido' => $validated['apellido'],
-            'numeroTelefono' => $validated['numeroTelefono'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'name' => $request->name,
+            'apellidos' => $request->apellidos,
+            'numeroTelefono' => $request->numeroTelefono,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
-        // Opcional: puedes devolver una respuesta con los datos del usuario registrado o un mensaje
-        return response()->json(['message' => 'Usuario registrado correctamente', 'user' => $user], 201);
+        // Retornamos la respuesta con el usuario creado
+        return response()->json([
+            'message' => 'Usuario registrado exitosamente',
+            'user' => $user,
+        ], 201);
     }
 
     // Login
