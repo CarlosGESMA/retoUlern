@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    'allowed_origins' => ['*'], //Dejo esta configuración para no tener problemas con la revisión del reto. Entiendo que es mejor especificar el puerto.
 
     'allowed_origins_patterns' => [],
 

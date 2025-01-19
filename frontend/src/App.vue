@@ -1,11 +1,15 @@
 <template>
-  <div class="text-center">
-    <h1 class="text-4xl font-bold text-blue-600">¡Hola desde Vue 3 con Vite y TailwindCSS!</h1>
+  <div id="app" class="bg-gray-300">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: "App",
+  name: 'App',
 };
 </script>
+
+<style>
+
+</style>

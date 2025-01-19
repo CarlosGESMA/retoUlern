@@ -11,25 +11,23 @@ use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
+    //Registro
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'numeroTelefono' => 'required|string|max:15',
+            'numeroTelefono' => 'required|max:15',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed', 
         ]);
 
-        // Retornarmos errores de validación en caso de haber
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Error de validación',
                 'errors' => $validator->errors(),
             ], 422);
         }
 
-        // Creo el usuario
         $user = User::create([
             'name' => $request->name,
             'apellidos' => $request->apellidos,
@@ -38,14 +36,14 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Retornamos la respuesta con el usuario creado
         return response()->json([
             'message' => 'Usuario registrado exitosamente',
             'user' => $user,
         ], 201);
     }
 
-    // Login
+
+    // Inicio de sesión
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -53,7 +51,7 @@ class AuthController extends Controller
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             return response()->json([
-                'token' => $user->createToken('YourAppName')->plainTextToken,
+                'token' => $user->createToken('RetoUlern')->plainTextToken,
             ]);
         }
 
@@ -68,7 +66,7 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
-    // Logout
+    // Cierre de sesión
     public function logout(Request $request)
     {
         auth()->user()->tokens->each(function ($token) {
